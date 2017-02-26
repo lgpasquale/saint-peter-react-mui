@@ -1,4 +1,3 @@
-import { browserHistory } from 'react-router';
 import fetchWithJWT from '../fetchWithJWT';
 import 'whatwg-fetch';
 /* global fetch */
@@ -104,7 +103,7 @@ export function readAuthInfoFromLocalStorage () {
  * @param authenticationPath the url where the server provides the resource
  * to authenticate
  */
-export function attemptLogin (authenticationPath, username, password) {
+export function attemptLogin (authenticationPath, username, password, successCallback) {
   return (dispatch, getState) => {
     if (getState().auth.info.authStatus === AuthStatus.AUTHENTICATING) {
       return;
@@ -147,7 +146,7 @@ export function attemptLogin (authenticationPath, username, password) {
           json.token,
           json.tokenExpirationDate
         ));
-        browserHistory.push('/');
+        successCallback();
       }).catch((e) => {
         console.error('Error ' + e.message);
       });
@@ -162,7 +161,7 @@ export function attemptLogin (authenticationPath, username, password) {
  * @param tokenRenewalPath the url where the server provides the resource
  * to renew the token
  */
-export function renewToken (tokenRenewalPath) {
+export function renewToken (tokenRenewalPath, failCallback) {
   return (dispatch, getState) => {
     // don't try to renew the token if there is already
     // an authentication attempt happening
@@ -181,7 +180,7 @@ export function renewToken (tokenRenewalPath) {
         if (window.localStorage.getItem('authentication')) {
           window.localStorage.removeItem('authentication');
         }
-        browserHistory.push('/');
+        failCallback();
         return;
       }
       response.json().then((json) => {
@@ -213,12 +212,12 @@ export function renewToken (tokenRenewalPath) {
   };
 }
 
-export function logout () {
+export function logout (successCallback) {
   return (dispatch, getState) => {
     dispatch(updateAuthStatus(AuthStatus.NONE));
     if (window.localStorage.authentication) {
       window.localStorage.removeItem('authentication');
     }
-    browserHistory.push('/');
+    successCallback();
   };
 }

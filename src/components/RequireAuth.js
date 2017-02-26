@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
 import CircularProgress from 'material-ui/CircularProgress';
 import {AuthStatus, readAuthInfoFromLocalStorage, renewToken} from '../actions/authentication-actions';
 
-export default function (ComposedComponent) {
+export default function (ComposedComponent, history) {
   class RequireAuth extends React.Component {
     componentDidMount () {
       if (this.props.authStatus === AuthStatus.UNKNOWN) {
@@ -13,7 +12,7 @@ export default function (ComposedComponent) {
         this.props.renewToken();
       } else if (this.props.authStatus !== AuthStatus.AUTHENTICATED &&
         this.props.authStatus !== AuthStatus.AUTHENTICATING) {
-        browserHistory.push('/login');
+        history.push('/login');
       }
     }
 
@@ -24,7 +23,7 @@ export default function (ComposedComponent) {
         this.props.renewToken();
       } else if (this.props.authStatus !== AuthStatus.AUTHENTICATED &&
         this.props.authStatus !== AuthStatus.AUTHENTICATING) {
-        browserHistory.push('/login');
+        history.push('/login');
       }
     }
 
@@ -48,7 +47,7 @@ export default function (ComposedComponent) {
   function mapDispatchToProps (dispatch) {
     return {
       readAuthInfoFromLocalStorage: () => dispatch(readAuthInfoFromLocalStorage()),
-      renewToken: () => dispatch(renewToken('/renew-token'))
+      renewToken: () => dispatch(renewToken('/renew-token', () => history.push('/')))
     };
   }
 

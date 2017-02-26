@@ -1,60 +1,43 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import {browserHistory} from 'react-router';
-import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
-import Home from 'material-ui/svg-icons/action/home';
-import { AuthStatus, logout } from '../actions/authentication-actions';
-
-const AppMenu = (props) => (
-  <IconMenu
-    iconButtonElement={
-      <IconButton><NavigationMenu color={'white'} /></IconButton>
-    }
-    targetOrigin={{horizontal: 'right', vertical: 'top'}}
-    anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-  >
-    {props.isAdmin &&
-      <MenuItem primaryText='Users' onClick={() => browserHistory.push('/user-management')} />}
-    <MenuItem primaryText='Account settings' onClick={() => browserHistory.push('/account-settings')} />
-    <MenuItem primaryText='Sign out' onClick={props.logout} />
-  </IconMenu>
-);
+import {browserHistory, Router, Route, IndexRedirect} from 'react-router';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppLayout from './AppLayout';
+import LoginForm from './LoginForm';
+import AccountSettings from './AccountSettings';
+import UserManagement from './UserManagement';
+import RequireAuth from './RequireAuth';
+import PageNotFound from './PageNotFound';
 
 class App extends React.Component {
   render () {
-    let adminGroup = this.props.adminGroup || 'admin';
     return (
-      <div>
-        <AppBar
-          title='DemoApp'
-          iconElementLeft={<IconButton onClick={() => browserHistory.push('/')}><Home /></IconButton>}
-          iconElementRight={this.props.info.authStatus === AuthStatus.AUTHENTICATED
-            ? <AppMenu logout={this.props.logout}
-              isAdmin={this.props.info.groups.indexOf(adminGroup) >= 0} />
-            : null} />
-        {this.props.children}
-      </div>
+      <MuiThemeProvider>
+        <Router history={this.props.history}>
+          <Route path='/' component={(props) =>
+            (<AppLayout history={this.props.history} children={props.children} />)
+          }>
+            <IndexRedirect to={this.props.mainPath} />
+            <Route path={this.props.mainPath} component={this.props.mainComponent}>
+              {this.props.routes}
+            </Route>
+            <Route path='login' component={
+              () => (<LoginForm history={this.props.history} />)}
+            />
+            <Route path='account-settings' component={
+              RequireAuth(AccountSettings, this.props.history)} />
+            <Route path='user-management' component={
+              RequireAuth(UserManagement, this.props.history)} />
+            <Route path='*' component={PageNotFound} />
+          </Route>
+        </Router>
+      </MuiThemeProvider>
     );
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    info: state.auth.info
-  };
-}
+App.defaultProps = {
+  mainPath: 'app',
+  history: browserHistory
+};
 
-function mapDispatchToProps (dispatch) {
-  return {
-    logout: () => dispatch(logout())
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default App;

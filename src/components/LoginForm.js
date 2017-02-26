@@ -7,6 +7,11 @@ import Paper from 'material-ui/Paper';
 import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 import {attemptLogin, AuthStatus} from '../actions/authentication-actions';
 
+let submitLoginForm = (values, dispatch, props) =>
+  dispatch(attemptLogin('/authenticate', values.username, values.password,
+    () => props.history.push('')
+  ));
+
 let LoginForm = (props) => {
   return (
     <form onSubmit={props.handleSubmit}>
@@ -50,7 +55,8 @@ let LoginForm = (props) => {
 };
 
 LoginForm = reduxForm({
-  form: 'loginForm'
+  form: 'loginForm',
+  onSubmit: submitLoginForm
 })(LoginForm);
 
 const mapStateToProps = (state) => {
@@ -59,14 +65,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onSubmit: (values) =>
-      dispatch(attemptLogin('/authenticate', values.username, values.password))
-  };
-};
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(LoginForm);

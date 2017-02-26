@@ -100,16 +100,16 @@ export function readAuthInfoFromLocalStorage () {
 
 /**
  * Attempt to login
- * @param authenticationPath the url where the server provides the resource
+ * @param authenticationURL the url where the server provides the resource
  * to authenticate
  */
-export function attemptLogin (authenticationPath, username, password, successCallback) {
+export function attemptLogin (authenticationURL, username, password, successCallback) {
   return (dispatch, getState) => {
     if (getState().auth.info.authStatus === AuthStatus.AUTHENTICATING) {
       return;
     }
     dispatch(updateAuthStatus(AuthStatus.AUTHENTICATING));
-    fetch(authenticationPath, {
+    fetch(authenticationURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -158,10 +158,10 @@ export function attemptLogin (authenticationPath, username, password, successCal
 
 /**
  * Attempt to renew a token
- * @param tokenRenewalPath the url where the server provides the resource
+ * @param tokenRenewalURL the url where the server provides the resource
  * to renew the token
  */
-export function renewToken (tokenRenewalPath, failCallback) {
+export function renewToken (tokenRenewalURL, failCallback) {
   return (dispatch, getState) => {
     // don't try to renew the token if there is already
     // an authentication attempt happening
@@ -169,7 +169,7 @@ export function renewToken (tokenRenewalPath, failCallback) {
       return;
     }
     dispatch(updateAuthStatus(AuthStatus.AUTHENTICATING));
-    fetchWithJWT(tokenRenewalPath, {
+    fetchWithJWT(tokenRenewalURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

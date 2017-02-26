@@ -40,7 +40,7 @@ function mapStateToProps (state) {
   return {
     initialValues: {email: state.auth.info.email},
     info: state.auth.info,
-    setUserEmailURL: '/set-user-email'
+    setUserEmailPath: '/set-user-email'
   };
 }
 

@@ -29,7 +29,7 @@ let AccountSettings = (props) => {
             showExpandableButton
           />
           <CardText expandable actAsExpander={false}>
-            <ChangeAccountEmailForm />
+            <ChangeAccountEmailForm authServerURL={props.authServerURL} />
           </CardText>
         </Card>
         <Card>
@@ -39,7 +39,7 @@ let AccountSettings = (props) => {
             showExpandableButton
           />
           <CardText expandable actAsExpander={false}>
-            <ChangeAccountPasswordForm />
+            <ChangeAccountPasswordForm authServerURL={props.authServerURL} />
           </CardText>
         </Card>
       </div>

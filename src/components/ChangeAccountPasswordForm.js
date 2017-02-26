@@ -58,7 +58,7 @@ ChangeAccountPasswordForm = reduxForm({
 function mapStateToProps (state) {
   return {
     info: state.auth.info,
-    setUserPasswordURL: '/set-user-password'
+    setUserPasswordPath: '/set-user-password'
   };
 }
 

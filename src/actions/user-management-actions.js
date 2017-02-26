@@ -58,6 +58,10 @@ export function changeUpdatedUser (username, userInfo) {
   };
 }
 
+/**
+ * Retrieve info (username, email, lastName, firstName, groups) for all users
+ * @param getUserInfoURL url used to retrieve user infos
+ */
 export function getUsersInfo (usersInfoURL) {
   return (dispatch, getState) => {
     fetchWithJWT(usersInfoURL, {
@@ -81,9 +85,13 @@ export function getUsersInfo (usersInfoURL) {
   };
 }
 
-export function getGroups (groupsURL) {
+/**
+ * Retrieve the list of groups
+ * @param getGroupsURL url used to retrieve the list of groups
+ */
+export function getGroups (getGroupsURL) {
   return (dispatch, getState) => {
-    fetchWithJWT(groupsURL, {
+    fetchWithJWT(getGroupsURL, {
       method: 'GET'
     }).then((response) => {
       if (response.status !== 200) {
@@ -104,7 +112,12 @@ export function getGroups (groupsURL) {
   };
 }
 
-export function createUser (userCreationURL) {
+/**
+ * Create a new user.
+ * The new user is craeted with a default username
+ * On success editUser(username) is dispatched
+ */
+export function createUser (addUserURL) {
   return (dispatch, getState) => {
     let username = 'user';
     let counter = 1;
@@ -112,7 +125,7 @@ export function createUser (userCreationURL) {
       username = 'user' + counter.toString();
       counter++;
     }
-    fetchWithJWT(userCreationURL, {
+    fetchWithJWT(addUserURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -139,11 +152,14 @@ export function createUser (userCreationURL) {
   };
 }
 
-export function deleteUser (userDeletionURL, username) {
+/**
+ * Delete a given user
+ */
+export function deleteUser (deleteUserURL, username) {
   return (dispatch, getState) => {
     // first hide the confirmation dialog
     dispatch(confirmUserDeletion(''));
-    fetchWithJWT(userDeletionURL, {
+    fetchWithJWT(deleteUserURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -162,7 +178,11 @@ export function deleteUser (userDeletionURL, username) {
   };
 }
 
-export function updateUserInfo (userInfoUpdateURL, username, userInfo) {
+/**
+ * Update user info
+ * @param userInfo an object containing username, email, firstName, lastName and groups
+ */
+export function updateUserInfo (setUserInfoURL, username, userInfo) {
   return (dispatch, getState) => {
     // build the groups array based on the selected checkboxes
     userInfo.groups = [];
@@ -171,7 +191,7 @@ export function updateUserInfo (userInfoUpdateURL, username, userInfo) {
         userInfo.groups.push(group);
       }
     }
-    fetchWithJWT(userInfoUpdateURL, {
+    fetchWithJWT(setUserInfoURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -192,9 +212,12 @@ export function updateUserInfo (userInfoUpdateURL, username, userInfo) {
   };
 }
 
-export function resetUserPassword (passwordResetURL, username, password) {
+/**
+ * Reset a user's password (without needing the old one)
+ */
+export function resetUserPassword (resetUserPasswordURL, username, password) {
   return (dispatch, getState) => {
-    fetchWithJWT(passwordResetURL, {
+    fetchWithJWT(resetUserPasswordURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

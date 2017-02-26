@@ -8,7 +8,7 @@ import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 import {attemptLogin, AuthStatus} from '../actions/authentication-actions';
 
 let submitLoginForm = (values, dispatch, props) =>
-  dispatch(attemptLogin('/authenticate', values.username, values.password,
+  dispatch(attemptLogin(props.authServerURL + '/authenticate', values.username, values.password,
     () => props.history.push('')
   ));
 

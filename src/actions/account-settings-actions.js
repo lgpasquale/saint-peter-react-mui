@@ -17,7 +17,7 @@ export function changeAccountSettingsPage (page) {
  * Function passed as onSubmit to ChangeAccountEmailForm
  */
 export function submitChangeAccountEmail (values, dispatch, props) {
-  return fetchWithJWT(props.setUserEmailURL, {
+  return fetchWithJWT(props.authServerURL + props.setUserEmailPath, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ export function submitChangeAccountEmail (values, dispatch, props) {
  * Function passed as onSubmit to ChangeAccountPasswordForm
  */
 export function submitChangeAccountPassword (values, dispatch, props) {
-  return fetchWithJWT(props.setUserPasswordURL, {
+  return fetchWithJWT(props.authServerURL + props.setUserPasswordPath, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

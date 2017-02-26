@@ -1,5 +1,5 @@
 import React from 'react';
-import {browserHistory, Router, Route, IndexRedirect} from 'react-router';
+import {hashHistory, Router, Route, IndexRedirect} from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppLayout from './AppLayout';
 import LoginForm from './LoginForm';
@@ -21,12 +21,18 @@ class App extends React.Component {
               {this.props.routes}
             </Route>
             <Route path='login' component={
-              () => (<LoginForm history={this.props.history} />)}
+              () => (<LoginForm history={this.props.history}
+                authServerURL={this.props.authServerURL}
+              />)}
             />
             <Route path='account-settings' component={
-              RequireAuth(AccountSettings, this.props.history)} />
+              RequireAuth(() => (<AccountSettings
+                authServerURL={this.props.authServerURL}
+              />), this.props.history)} />
             <Route path='user-management' component={
-              RequireAuth(UserManagement, this.props.history)} />
+              RequireAuth(() => (<UserManagement
+                authServerURL={this.props.authServerURL}
+              />), this.props.history)} />
             <Route path='*' component={PageNotFound} />
           </Route>
         </Router>
@@ -37,7 +43,7 @@ class App extends React.Component {
 
 App.defaultProps = {
   mainPath: 'app',
-  history: browserHistory
+  history: hashHistory
 };
 
 export default App;

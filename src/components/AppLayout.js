@@ -27,7 +27,10 @@ class AppLayout extends React.Component {
   render () {
     let adminGroup = this.props.adminGroup || 'admin';
     return (
-      <div>
+      <div style={{display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}>
         <AppBar
           title='DemoApp'
           iconElementLeft={<IconButton onClick={() => this.props.history.push('/')}><Home /></IconButton>}

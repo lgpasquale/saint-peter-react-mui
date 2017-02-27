@@ -47,7 +47,7 @@ export default function (ComposedComponent, history) {
   function mapDispatchToProps (dispatch) {
     return {
       readAuthInfoFromLocalStorage: () => dispatch(readAuthInfoFromLocalStorage()),
-      renewToken: () => dispatch(renewToken('/renew-token', () => history.push('/')))
+      renewToken: () => dispatch(renewToken(() => history.push('/')))
     };
   }
 

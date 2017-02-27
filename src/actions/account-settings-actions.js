@@ -26,7 +26,8 @@ export function submitChangeAccountEmail (values, dispatch, props) {
       username: props.info.username,
       email: values.email
     })
-  }).then((response) => {
+  },
+  dispatch).then((response) => {
     if (response.status !== 200) {
       throw new SubmissionError({_error: 'Error updating email'});
     }
@@ -64,7 +65,8 @@ export function submitChangeAccountPassword (values, dispatch, props) {
       oldPassword: values.oldPassword,
       newPassword: values.newPassword
     })
-  }).then((response) => {
+  },
+  dispatch).then((response) => {
     if (response.status !== 200) {
       throw new SubmissionError({_error: 'Error updating password'});
     }

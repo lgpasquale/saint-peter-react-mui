@@ -1,4 +1,3 @@
-import fetchWithJWT from '../fetchWithJWT';
 import 'whatwg-fetch';
 /* global fetch */
 
@@ -14,7 +13,7 @@ export var AuthStatus = {
 
 export const UPDATE_AUTH_STATUS = 'UPDATE_AUTH_STATUS';
 
-function loginSuccessful (username, groups, email, firstName, lastName,
+export function loginSuccessful (username, groups, email, firstName, lastName,
   token, tokenExpirationDate) {
   return {
     type: UPDATE_AUTH_STATUS,
@@ -29,7 +28,7 @@ function loginSuccessful (username, groups, email, firstName, lastName,
   };
 }
 
-function expiredToken (username, groups, email, firstName, lastName,
+export function expiredToken (username, groups, email, firstName, lastName,
   token, tokenExpirationDate) {
   return {
     type: UPDATE_AUTH_STATUS,
@@ -44,7 +43,7 @@ function expiredToken (username, groups, email, firstName, lastName,
   };
 }
 
-function updateAuthStatus (authStatus) {
+export function updateAuthStatus (authStatus) {
   return {
     type: UPDATE_AUTH_STATUS,
     authStatus: authStatus
@@ -70,7 +69,8 @@ export function readAuthInfoFromLocalStorage () {
       localState.firstName !== undefined &&
       localState.lastName !== undefined &&
       localState.token !== undefined &&
-      localState.tokenExpirationDate !== undefined) {
+      localState.tokenExpirationDate !== undefined &&
+      localState.renewTokenURL !== undefined) {
       // localStorage.authentication conatins all the needed fields
       if (localState.tokenExpirationDate > (new Date()).getTime() / 1000) {
         dispatch(loginSuccessful(localState.username,
@@ -100,16 +100,18 @@ export function readAuthInfoFromLocalStorage () {
 
 /**
  * Attempt to login
- * @param authenticationURL the url where the server provides the resource
+ * @param authenticateURL url where the server provides the resource
  * to authenticate
+ * @param renewTokenURL url where an expired token can be renewed (not used here but saved in local storage for future use)
  */
-export function attemptLogin (authenticationURL, username, password, successCallback) {
+export function attemptLogin (authenticateURL, renewTokenURL,
+  username, password, successCallback) {
   return (dispatch, getState) => {
     if (getState().auth.info.authStatus === AuthStatus.AUTHENTICATING) {
       return;
     }
     dispatch(updateAuthStatus(AuthStatus.AUTHENTICATING));
-    fetch(authenticationURL, {
+    fetch(authenticateURL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -135,7 +137,8 @@ export function attemptLogin (authenticationURL, username, password, successCall
             firstName: json.firstName,
             lastName: json.lastName,
             token: json.token,
-            tokenExpirationDate: json.tokenExpirationDate
+            tokenExpirationDate: json.tokenExpirationDate,
+            renewTokenURL: renewTokenURL
           }
         ));
         dispatch(loginSuccessful(json.username,
@@ -156,32 +159,33 @@ export function attemptLogin (authenticationURL, username, password, successCall
   };
 }
 
-/**
- * Attempt to renew a token
- * @param tokenRenewalURL the url where the server provides the resource
- * to renew the token
- */
-export function renewToken (tokenRenewalURL, failCallback) {
-  return (dispatch, getState) => {
-    // don't try to renew the token if there is already
-    // an authentication attempt happening
-    if (getState().auth.info.authStatus === AuthStatus.AUTHENTICATING) {
-      return;
+export function fetchRenewedToken () {
+  return new Promise((resolve, reject) => {
+    // try to retrieve the token and the URL where it can be renewed
+    // from local storage
+    let authentication = window.localStorage.getItem('authentication');
+    if (!authentication) {
+      reject(new Error('No token in localStorage'));
     }
-    dispatch(updateAuthStatus(AuthStatus.AUTHENTICATING));
-    fetchWithJWT(tokenRenewalURL, {
+    let authInfo = JSON.parse(authentication);
+    let token = authInfo.token;
+    let renewTokenURL = authInfo.renewTokenURL;
+    if (!token || !renewTokenURL) {
+      return reject(new Error('No token in localStorage'));
+    }
+    fetch(renewTokenURL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': 'bearer ' + token
       }
     }).then((response) => {
       if (response.status !== 200) {
-        dispatch(updateAuthStatus(AuthStatus.NONE));
         if (window.localStorage.getItem('authentication')) {
           window.localStorage.removeItem('authentication');
         }
-        failCallback();
-        return;
+        return reject(new Error('HTTP error ' + response.status +
+          'trying to renew token'));
       }
       response.json().then((json) => {
         window.localStorage.setItem('authentication', JSON.stringify(
@@ -192,22 +196,34 @@ export function renewToken (tokenRenewalURL, failCallback) {
             firstName: json.firstName,
             lastName: json.lastName,
             token: json.token,
-            tokenExpirationDate: json.tokenExpirationDate
+            tokenExpirationDate: json.tokenExpirationDate,
+            renewTokenURL: renewTokenURL
           }
         ));
-        dispatch(loginSuccessful(json.username,
-          json.groups,
-          json.email,
-          json.firstName,
-          json.lastName,
-          json.token,
-          json.tokenExpirationDate
-        ));
-      }).catch((e) => {
-        console.error('Error: ' + e.message);
-      });
+        return resolve(json);
+      }).catch((e) => reject(e));
+    });
+  });
+}
+
+/**
+ * Attempt to renew a token
+ * @param failCallback callback called if token renewal fails
+ */
+export function renewToken (failCallback) {
+  return (dispatch, getState) => {
+    fetchRenewedToken().then((json) => {
+      dispatch(loginSuccessful(json.username,
+        json.groups,
+        json.email,
+        json.firstName,
+        json.lastName,
+        json.token,
+        json.tokenExpirationDate
+      ));
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      updateAuthStatus(AuthStatus.NONE);
+      failCallback();
     });
   };
 }

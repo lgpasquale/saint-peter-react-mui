@@ -66,7 +66,7 @@ export function getUsersInfo (usersInfoURL) {
   return (dispatch, getState) => {
     fetchWithJWT(usersInfoURL, {
       method: 'GET'
-    }).then((response) => {
+    }, dispatch).then((response) => {
       if (response.status !== 200) {
         // TODO: probably dispatch something
         console.error('Could not retrieve user info');
@@ -93,7 +93,7 @@ export function getGroups (getGroupsURL) {
   return (dispatch, getState) => {
     fetchWithJWT(getGroupsURL, {
       method: 'GET'
-    }).then((response) => {
+    }, dispatch).then((response) => {
       if (response.status !== 200) {
         // TODO: probably dispatch something
         console.error('Could not retrieve groups');
@@ -134,7 +134,7 @@ export function createUser (addUserURL) {
         username: username,
         password: ''
       })
-    }).then((response) => {
+    }, dispatch).then((response) => {
       if (response.status !== 200) {
         throw new Error('Could not create user');
       }
@@ -167,7 +167,7 @@ export function deleteUser (deleteUserURL, username) {
       body: JSON.stringify({
         username: username
       })
-    }).then((response) => {
+    }, dispatch).then((response) => {
       if (response.status !== 200) {
         throw new Error('Could not delete user');
       }
@@ -200,7 +200,7 @@ export function updateUserInfo (setUserInfoURL, username, userInfo) {
         username: username,
         userInfo: userInfo
       })
-    }).then((response) => {
+    }, dispatch).then((response) => {
       if (response.status !== 200) {
         throw new Error('Could not update user info');
       }
@@ -226,7 +226,7 @@ export function resetUserPassword (resetUserPasswordURL, username, password) {
         username,
         password
       })
-    }).then((response) => {
+    }, dispatch).then((response) => {
       if (response.status !== 200) {
         throw new Error('Could not reset password');
       }

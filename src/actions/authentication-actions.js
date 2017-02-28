@@ -222,7 +222,7 @@ export function renewToken (failCallback) {
         json.tokenExpirationDate
       ));
     }).catch((e) => {
-      updateAuthStatus(AuthStatus.NONE);
+      dispatch(updateAuthStatus(AuthStatus.NONE));
       failCallback();
     });
   };

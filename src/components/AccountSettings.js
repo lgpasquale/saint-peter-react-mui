@@ -7,6 +7,7 @@ import ChangeAccountPasswordForm from './ChangeAccountPasswordForm';
 let AccountSettings = (props) => {
   return (
     <div style={{display: 'flex',
+      flexGrow: '1',
       flexDirection: 'row',
       justifyContent: 'center',
       padding: '20px'}}

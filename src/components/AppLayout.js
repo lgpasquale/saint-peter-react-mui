@@ -27,19 +27,24 @@ class AppLayout extends React.Component {
   render () {
     let adminGroup = this.props.adminGroup || 'admin';
     return (
-      <div style={{display: 'flex',
+      <div style={{minHeight: '100%',
+        display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        alignItems: 'stretch'
       }}>
-        <AppBar
-          title='DemoApp'
-          iconElementLeft={<IconButton onClick={() => this.props.history.push('/')}><Home /></IconButton>}
-          iconElementRight={this.props.info.authStatus === AuthStatus.AUTHENTICATED
-            ? <AppMenu logout={this.props.logout}
-              history={this.props.history}
-              isAdmin={this.props.info.groups.indexOf(adminGroup) >= 0} />
-            : null} />
-        {this.props.children}
+        <div>
+          <AppBar
+            title='DemoApp'
+            iconElementLeft={<IconButton onClick={() => this.props.history.push('/')}><Home /></IconButton>}
+            iconElementRight={this.props.info.authStatus === AuthStatus.AUTHENTICATED
+              ? <AppMenu logout={this.props.logout}
+                history={this.props.history}
+                isAdmin={this.props.info.groups.indexOf(adminGroup) >= 0} />
+              : null} />
+        </div>
+        <div style={{display: 'flex', flexGrow: '1'}}>
+          {this.props.children}
+        </div>
       </div>
     );
   }

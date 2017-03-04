@@ -34,7 +34,7 @@ class AppLayout extends React.Component {
       }}>
         <div>
           <AppBar
-            title='DemoApp'
+            title={this.props.title}
             iconElementLeft={<IconButton onClick={() => this.props.history.push('/')}><Home /></IconButton>}
             iconElementRight={this.props.info.authStatus === AuthStatus.AUTHENTICATED
               ? <AppMenu logout={this.props.logout}

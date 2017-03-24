@@ -202,7 +202,7 @@ export function fetchRenewedToken () {
         ));
         return resolve(json);
       }).catch((e) => reject(e));
-    });
+    }).catch((e) => reject(e));
   });
 }
 

@@ -15,7 +15,9 @@ class App extends React.Component {
         <Router history={this.props.history}>
           <Route path='/' component={(props) =>
             (<AppLayout title={this.props.title}
-              history={this.props.history} children={props.children} />)
+              history={this.props.history}
+              adminGroup={this.props.adminGroup || 'admin'}
+              children={props.children} />)
           }>
             <IndexRedirect to={this.props.mainPath} />
             <Route path={this.props.mainPath} component={this.props.mainComponent}>

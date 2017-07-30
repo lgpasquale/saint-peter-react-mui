@@ -51,7 +51,7 @@ export default function userManagement (state = initialState, action) {
         editingUser: action.username,
         editingUserInfo: {
           ...state.users[action.username],
-          belongsToGroups
+          ...belongsToGroups
         }
       });
     case CHANGE_UPDATED_USER:

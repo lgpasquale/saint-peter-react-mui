@@ -35,7 +35,9 @@ let EditUserForm = (props) => {
 };
 
 EditUserForm = reduxForm({
-  form: 'editUser'
+  form: 'editUser',
+  enableReinitialize: true,
+  keepDirtyOnReinitialize: false
 })(EditUserForm);
 
 const mapStateToProps = (state) => ({

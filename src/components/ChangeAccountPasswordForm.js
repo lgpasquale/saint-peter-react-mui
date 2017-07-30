@@ -55,12 +55,9 @@ ChangeAccountPasswordForm = reduxForm({
   validate: validate
 })(ChangeAccountPasswordForm);
 
-function mapStateToProps (state) {
-  return {
-    info: state.auth.info,
-    setUserPasswordPath: '/set-user-password'
-  };
-}
+const mapStateToProps = (state) => ({
+  info: state.auth.info
+});
 
 export default connect(
   mapStateToProps

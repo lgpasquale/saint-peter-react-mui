@@ -60,11 +60,11 @@ export function changeUpdatedUser (username, userInfo) {
 
 /**
  * Retrieve info (username, email, lastName, firstName, groups) for all users
- * @param getUserInfoURL url used to retrieve user infos
+ * @param authServerURL base URL of the auth server
  */
-export function getUsersInfo (usersInfoURL) {
+export function getUsersInfo (authServerURL) {
   return (dispatch, getState) => {
-    fetchWithJWT(usersInfoURL, {
+    fetchWithJWT(authServerURL + '/users', {
       method: 'GET'
     }, dispatch).then((response) => {
       if (response.status !== 200) {
@@ -73,8 +73,8 @@ export function getUsersInfo (usersInfoURL) {
         return;
       }
       response.json().then((json) => {
-        for (const username of Object.keys(json)) {
-          dispatch(addExistingUser(json[username]));
+        for (let user of json) {
+          dispatch(addExistingUser(user));
         }
       }).catch((e) => {
         console.error('Error: ' + e.message);
@@ -87,11 +87,11 @@ export function getUsersInfo (usersInfoURL) {
 
 /**
  * Retrieve the list of groups
- * @param getGroupsURL url used to retrieve the list of groups
+ * @param authServerURL base URL of the auth server
  */
-export function getGroups (getGroupsURL) {
+export function getGroups (authServerURL) {
   return (dispatch, getState) => {
-    fetchWithJWT(getGroupsURL, {
+    fetchWithJWT(authServerURL + '/groups', {
       method: 'GET'
     }, dispatch).then((response) => {
       if (response.status !== 200) {
@@ -105,6 +105,7 @@ export function getGroups (getGroupsURL) {
         }
       }).catch((e) => {
         console.error('Error: ' + e.message);
+        console.error(e.stack);
       });
     }).catch((e) => {
       console.error('Error: ' + e.message);
@@ -116,8 +117,9 @@ export function getGroups (getGroupsURL) {
  * Create a new user.
  * The new user is craeted with a default username
  * On success editUser(username) is dispatched
+ * @param authServerURL base URL of the auth server
  */
-export function createUser (addUserURL) {
+export function createUser (authServerURL) {
   return (dispatch, getState) => {
     let username = 'user';
     let counter = 1;
@@ -125,7 +127,7 @@ export function createUser (addUserURL) {
       username = 'user' + counter.toString();
       counter++;
     }
-    fetchWithJWT(addUserURL, {
+    fetchWithJWT(authServerURL + '/users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -154,19 +156,14 @@ export function createUser (addUserURL) {
 
 /**
  * Delete a given user
+ * @param authServerURL base URL of the auth server
  */
-export function deleteUser (deleteUserURL, username) {
+export function deleteUser (authServerURL, username) {
   return (dispatch, getState) => {
     // first hide the confirmation dialog
     dispatch(confirmUserDeletion(''));
-    fetchWithJWT(deleteUserURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username
-      })
+    fetchWithJWT(authServerURL + '/users/' + username, {
+      method: 'DELETE'
     }, dispatch).then((response) => {
       if (response.status !== 200) {
         throw new Error('Could not delete user');
@@ -180,9 +177,10 @@ export function deleteUser (deleteUserURL, username) {
 
 /**
  * Update user info
+ * @param authServerURL base URL of the auth server
  * @param userInfo an object containing username, email, firstName, lastName and groups
  */
-export function updateUserInfo (setUserInfoURL, username, userInfo) {
+export function updateUserInfo (authServerURL, username, userInfo) {
   return (dispatch, getState) => {
     // build the groups array based on the selected checkboxes
     userInfo.groups = [];
@@ -191,15 +189,12 @@ export function updateUserInfo (setUserInfoURL, username, userInfo) {
         userInfo.groups.push(group);
       }
     }
-    fetchWithJWT(setUserInfoURL, {
-      method: 'POST',
+    fetchWithJWT(authServerURL + '/users/' + username, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        username: username,
-        userInfo: userInfo
-      })
+      body: JSON.stringify(userInfo)
     }, dispatch).then((response) => {
       if (response.status !== 200) {
         throw new Error('Could not update user info');
@@ -214,16 +209,16 @@ export function updateUserInfo (setUserInfoURL, username, userInfo) {
 
 /**
  * Reset a user's password (without needing the old one)
+ * @param authServerURL base URL of the auth server
  */
-export function resetUserPassword (resetUserPasswordURL, username, password) {
+export function resetUserPassword (authServerURL, username, password) {
   return (dispatch, getState) => {
-    fetchWithJWT(resetUserPasswordURL, {
-      method: 'POST',
+    fetchWithJWT(authServerURL + '/users/' + username + '/reset-password', {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username,
         password
       })
     }, dispatch).then((response) => {

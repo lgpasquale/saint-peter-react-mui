@@ -179,18 +179,18 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
-    getUsersInfo: () => dispatch(getUsersInfo(ownProps.authServerURL + '/get-users-info')),
-    getGroups: () => dispatch(getGroups(ownProps.authServerURL + '/get-groups')),
-    createUser: () => dispatch(createUser(ownProps.authServerURL + '/add-user')),
-    deleteUser: (username) => dispatch(deleteUser(ownProps.authServerURL + '/delete-user', username)),
+    getUsersInfo: () => dispatch(getUsersInfo(ownProps.authServerURL)),
+    getGroups: () => dispatch(getGroups(ownProps.authServerURL)),
+    createUser: () => dispatch(createUser(ownProps.authServerURL)),
+    deleteUser: (username) => dispatch(deleteUser(ownProps.authServerURL, username)),
     confirmUserDeletion: (username) => dispatch(confirmUserDeletion(username)),
     editUser: (username) => dispatch(editUser(username)),
     updateUserInfo: (username, userInfo) =>
-      dispatch(updateUserInfo(ownProps.authServerURL + '/set-user-info', username, userInfo)),
+      dispatch(updateUserInfo(ownProps.authServerURL, username, userInfo)),
     submitEditUser: () => dispatch(submit('editUser')),
     changeUserPassword: (username) => dispatch(changeUserPassword(username)),
     resetUserPassword: (username, password) =>
-      dispatch(resetUserPassword(ownProps.authServerURL + '/reset-user-password', username, password)),
+      dispatch(resetUserPassword(ownProps.authServerURL, username, password)),
     submitChangeUserPassword: () => dispatch(submit('changeUserPassword'))
   };
 }

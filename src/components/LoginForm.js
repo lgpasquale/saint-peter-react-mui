@@ -8,8 +8,7 @@ import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 import {attemptLogin, AuthStatus} from '../actions/authentication-actions';
 
 let submitLoginForm = (values, dispatch, props) =>
-  dispatch(attemptLogin(props.authServerURL + '/authenticate',
-    props.authServerURL + '/renew-token',
+  dispatch(attemptLogin(props.authServerURL,
     values.username, values.password,
     () => props.history.push('')
   ));
@@ -61,11 +60,9 @@ LoginForm = reduxForm({
   onSubmit: submitLoginForm
 })(LoginForm);
 
-const mapStateToProps = (state) => {
-  return {
-    authStatus: state.auth.info.authStatus
-  };
-};
+const mapStateToProps = (state) => ({
+  authStatus: state.auth.info.authStatus
+});
 
 export default connect(
   mapStateToProps

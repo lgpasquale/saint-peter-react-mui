@@ -14,7 +14,7 @@ export var AuthStatus = {
 export const UPDATE_AUTH_STATUS = 'UPDATE_AUTH_STATUS';
 
 export function loginSuccessful (username, groups, email, firstName, lastName,
-  token, tokenExpirationDate) {
+  token, tokenExpirationDate, renewTokenURL) {
   return {
     type: UPDATE_AUTH_STATUS,
     authStatus: AuthStatus.AUTHENTICATED,
@@ -24,12 +24,13 @@ export function loginSuccessful (username, groups, email, firstName, lastName,
     firstName,
     lastName,
     token,
-    tokenExpirationDate
+    tokenExpirationDate,
+    renewTokenURL
   };
 }
 
 export function expiredToken (username, groups, email, firstName, lastName,
-  token, tokenExpirationDate) {
+  token, tokenExpirationDate, renewTokenURL) {
   return {
     type: UPDATE_AUTH_STATUS,
     authStatus: AuthStatus.EXPIRED,
@@ -39,7 +40,8 @@ export function expiredToken (username, groups, email, firstName, lastName,
     firstName,
     lastName,
     token,
-    tokenExpirationDate
+    tokenExpirationDate,
+    renewTokenURL
   };
 }
 
@@ -79,7 +81,8 @@ export function readAuthInfoFromLocalStorage () {
           localState.firstName,
           localState.lastName,
           localState.token,
-          localState.tokenExpirationDate
+          localState.tokenExpirationDate,
+          localState.renewTokenURL
         ));
       } else {
         dispatch(expiredToken(localState.username,
@@ -88,7 +91,8 @@ export function readAuthInfoFromLocalStorage () {
           localState.firstName,
           localState.lastName,
           localState.token,
-          localState.tokenExpirationDate
+          localState.tokenExpirationDate,
+          localState.renewTokenURL
         ));
       }
     } else {
@@ -100,18 +104,16 @@ export function readAuthInfoFromLocalStorage () {
 
 /**
  * Attempt to login
- * @param authenticateURL url where the server provides the resource
- * to authenticate
- * @param renewTokenURL url where an expired token can be renewed (not used here but saved in local storage for future use)
+ * @param authServerURL base URL of the auth server
  */
-export function attemptLogin (authenticateURL, renewTokenURL,
+export function attemptLogin (authServerURL,
   username, password, successCallback) {
   return (dispatch, getState) => {
     if (getState().auth.info.authStatus === AuthStatus.AUTHENTICATING) {
       return;
     }
     dispatch(updateAuthStatus(AuthStatus.AUTHENTICATING));
-    fetch(authenticateURL, {
+    fetch(authServerURL + '/authenticate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -138,7 +140,7 @@ export function attemptLogin (authenticateURL, renewTokenURL,
             lastName: json.lastName,
             token: json.token,
             tokenExpirationDate: json.tokenExpirationDate,
-            renewTokenURL: renewTokenURL
+            renewTokenURL: authServerURL + '/renew-token'
           }
         ));
         dispatch(loginSuccessful(json.username,
@@ -147,7 +149,8 @@ export function attemptLogin (authenticateURL, renewTokenURL,
           json.firstName,
           json.lastName,
           json.token,
-          json.tokenExpirationDate
+          json.tokenExpirationDate,
+          authServerURL + '/renew-token'
         ));
         successCallback();
       }).catch((e) => {
@@ -174,7 +177,7 @@ export function fetchRenewedToken () {
       return reject(new Error('No token in localStorage'));
     }
     fetch(renewTokenURL, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'bearer ' + token

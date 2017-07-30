@@ -6,8 +6,10 @@ import {ADD_EXISTING_GROUP,
   CHANGE_UPDATED_USER,
   CHANGE_USER_PASSWORD} from '../actions/user-management-actions';
 
+const deepCopy = (object) => JSON.parse(JSON.stringify(object));
+
 var initialState = {
-  users: [],
+  users: {},
   groups: [],
   deletingUser: '',
   editingUser: '',
@@ -24,15 +26,15 @@ export default function userManagement (state = initialState, action) {
   let newUsers;
   switch (action.type) {
     case ADD_EXISTING_GROUP:
-      let newGroups = state.groups.slice();
+      let newGroups = deepCopy(state.groups);
       newGroups.push(action.group);
       return Object.assign({}, state, {groups: newGroups});
     case ADD_EXISTING_USER:
-      newUsers = Object.assign({}, state.users);
+      newUsers = deepCopy(state.users);
       newUsers[action.userInfo.username] = action.userInfo;
       return Object.assign({}, state, {users: newUsers});
     case REMOVE_DELETED_USER:
-      newUsers = Object.assign({}, state.users);
+      newUsers = deepCopy(state.users);
       delete newUsers[action.username];
       return Object.assign({}, state, {users: newUsers});
     case CONFIRM_USER_DELETION:
@@ -47,13 +49,14 @@ export default function userManagement (state = initialState, action) {
       }
       return Object.assign({}, state, {
         editingUser: action.username,
-        editingUserInfo: Object.assign({}, state.users[action.username],
+        editingUserInfo: {
+          ...state.users[action.username],
           belongsToGroups
-        )
+        }
       });
     case CHANGE_UPDATED_USER:
       // If the username was changed we need to delete the user and create a new one
-      newUsers = Object.assign({}, state.users);
+      newUsers = deepCopy(state.users);
       if (action.userInfo.username &&
         action.username !== action.userInfo.username) {
         delete newUsers[action.username];

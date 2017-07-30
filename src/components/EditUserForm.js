@@ -38,12 +38,10 @@ EditUserForm = reduxForm({
   form: 'editUser'
 })(EditUserForm);
 
-const mapStateToProps = (state) => {
-  return {
-    initialValues: state.auth.userManagement.editingUserInfo,
-    groups: state.auth.userManagement.groups
-  };
-};
+const mapStateToProps = (state) => ({
+  initialValues: state.auth.userManagement.editingUserInfo,
+  groups: state.auth.userManagement.groups
+});
 
 export default connect(
   mapStateToProps

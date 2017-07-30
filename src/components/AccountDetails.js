@@ -13,11 +13,9 @@ class AccountDetails extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    info: state.auth.info
-  };
-}
+const mapStateToProps = (state) => ({
+  info: state.auth.info
+});
 
 export default connect(
   mapStateToProps

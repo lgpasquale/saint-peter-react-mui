@@ -6,7 +6,8 @@ var initialState = {
   groups: [],
   email: '',
   token: '',
-  tokenExpirationDate: 0
+  tokenExpirationDate: 0,
+  renewTokenURL: ''
 };
 
 export default function authentication (state = initialState, action) {
@@ -21,7 +22,8 @@ export default function authentication (state = initialState, action) {
             groups: action.groups,
             email: action.email,
             token: action.token,
-            tokenExpirationDate: action.tokenExpirationDate
+            tokenExpirationDate: action.tokenExpirationDate,
+            renewTokenURL: action.renewTokenURL
           });
         case AuthStatus.AUTHENTICATING:
           return Object.assign({}, state, {authStatus: AuthStatus.AUTHENTICATING});

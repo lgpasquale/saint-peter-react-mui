@@ -17,17 +17,17 @@ export function changeAccountSettingsPage (page) {
  * Function passed as onSubmit to ChangeAccountEmailForm
  */
 export function submitChangeAccountEmail (values, dispatch, props) {
-  return fetchWithJWT(props.authServerURL + props.setUserEmailPath, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      username: props.info.username,
-      email: values.email
-    })
-  },
-  dispatch).then((response) => {
+  return fetchWithJWT(props.authServerURL + '/users/' +
+    props.info.username + '/email', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: values.email
+      })
+    }, dispatch
+  ).then((response) => {
     if (response.status !== 200) {
       throw new SubmissionError({_error: 'Error updating email'});
     }
@@ -38,7 +38,8 @@ export function submitChangeAccountEmail (values, dispatch, props) {
           groups: props.info.groups,
           email: values.email,
           token: props.info.token,
-          tokenExpirationDate: props.info.tokenExpirationDate
+          tokenExpirationDate: props.info.tokenExpirationDate,
+          renewTokenURL: props.info.renewTokenURL
         }
       ));
     }).catch((e) => {
@@ -55,18 +56,18 @@ export function submitChangeAccountEmail (values, dispatch, props) {
  * Function passed as onSubmit to ChangeAccountPasswordForm
  */
 export function submitChangeAccountPassword (values, dispatch, props) {
-  return fetchWithJWT(props.authServerURL + props.setUserPasswordPath, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      username: props.info.username,
-      oldPassword: values.oldPassword,
-      newPassword: values.newPassword
-    })
-  },
-  dispatch).then((response) => {
+  return fetchWithJWT(props.authServerURL + '/users/' +
+    props.info.username + '/password', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        oldPassword: values.oldPassword,
+        newPassword: values.newPassword
+      })
+    }, dispatch
+  ).then((response) => {
     if (response.status !== 200) {
       throw new SubmissionError({_error: 'Error updating password'});
     }

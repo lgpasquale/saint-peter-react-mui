@@ -36,13 +36,10 @@ ChangeAccountEmailForm = reduxForm({
   onSubmit: submitChangeAccountEmail
 })(ChangeAccountEmailForm);
 
-function mapStateToProps (state) {
-  return {
-    initialValues: {email: state.auth.info.email},
-    info: state.auth.info,
-    setUserEmailPath: '/set-user-email'
-  };
-}
+const mapStateToProps = (state) => ({
+  initialValues: {email: state.auth.info.email},
+  info: state.auth.info
+});
 
 export default connect(
   mapStateToProps

@@ -29,12 +29,12 @@ export default function fetchWithJWT (input, init, dispatch) {
             json.token,
             json.tokenExpirationDate
           ));
-          initWithJWT.headers.Authorization = 'bearer ' + json.token;
+          initWithJWT.headers.Authorization = 'Bearer ' + json.token;
           return fetch(input, initWithJWT);
         }).catch((e) => dispatch(updateAuthStatus(AuthStatus.NONE)));
       } else {
         // token is still valid
-        initWithJWT.headers.Authorization = 'bearer ' + token;
+        initWithJWT.headers.Authorization = 'Bearer ' + token;
         return fetch(input, initWithJWT);
       }
     } catch (e) {

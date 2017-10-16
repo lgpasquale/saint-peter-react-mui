@@ -36,9 +36,11 @@ class AppLayout extends React.Component {
           <Toolbar>
             <ToolbarGroup firstChild>
               <IconButton onClick={() => this.props.history.push('/')}><Home /></IconButton>
+              {this.props.leftToolbarElements}
             </ToolbarGroup>
             <ToolbarTitle text={this.props.title} />
             <ToolbarGroup lastChild>
+              {this.props.rightToolbarElements}
               {this.props.info.authStatus === AuthStatus.AUTHENTICATED
                 ? <AppMenu logout={this.props.logout}
                   history={this.props.history}

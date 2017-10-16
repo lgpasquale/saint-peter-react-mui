@@ -10,6 +10,7 @@ Props:
 - *mainPath*: path corrensponding to the **mainComponent** (default `app`)
 - *routes*: optional array of [react-router](https://github.com/ReactTraining/react-router) Routes. They will be sub-paths of the **mainPath**
 - *adminGroup*: group whose users are allowed to add/edit other users (default `admin`)
+- *title*: title shown on the top toolbar
+- *leftToolbarElements*: array of react elements to be shown on the left side of the toolbar
+- *rightToolbarElements*: array of react elements to be shown on the right side of the toolbar
 - *history*: one of browserHistory or hashHistory. See [react-router](https://github.com/ReactTraining/react-router) for details
-
-

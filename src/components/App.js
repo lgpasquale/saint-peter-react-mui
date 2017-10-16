@@ -15,6 +15,8 @@ class App extends React.Component {
           (<AppLayout title={this.props.title}
             history={this.props.history}
             adminGroup={this.props.adminGroup || 'admin'}
+            leftToolbarElements={this.props.leftToolbarElements}
+            rightToolbarElements={this.props.rightToolbarElements}
             children={props.children} />)
         }>
           <IndexRedirect to={this.props.mainPath} />
@@ -43,7 +45,9 @@ class App extends React.Component {
 
 App.defaultProps = {
   mainPath: 'app',
-  history: hashHistory
+  history: hashHistory,
+  leftToolbarElements: [],
+  rightToolbarElements: []
 };
 
 export default App;

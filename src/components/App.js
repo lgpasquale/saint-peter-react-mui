@@ -15,6 +15,7 @@ class App extends React.Component {
           (<AppLayout title={this.props.title}
             history={this.props.history}
             adminGroup={this.props.adminGroup || 'admin'}
+            logo={this.props.logo}
             leftToolbarElements={this.props.leftToolbarElements}
             rightToolbarElements={this.props.rightToolbarElements}
             children={props.children} />)

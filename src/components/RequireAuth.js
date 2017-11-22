@@ -5,7 +5,7 @@ import {AuthStatus, readAuthInfoFromLocalStorage, renewToken} from '../actions/a
 
 export default function (ComposedComponent, history, allowedGroups = []) {
   class RequireAuth extends React.Component {
-    componentDidMount () {
+    componentWillMount () {
       if (this.props.authStatus === AuthStatus.UNKNOWN) {
         this.props.readAuthInfoFromLocalStorage();
       } else if (this.props.authStatus === AuthStatus.EXPIRED) {
@@ -16,13 +16,13 @@ export default function (ComposedComponent, history, allowedGroups = []) {
       }
     }
 
-    componentDidUpdate () {
-      if (this.props.authStatus === AuthStatus.UNKNOWN) {
-        this.props.readAuthInfoFromLocalStorage();
-      } else if (this.props.authStatus === AuthStatus.EXPIRED) {
-        this.props.renewToken();
-      } else if (this.props.authStatus !== AuthStatus.AUTHENTICATING &&
-        this.props.authStatus !== AuthStatus.AUTHENTICATED) {
+    componentWillReceiveProps (nextProps) {
+      if (nextProps.authStatus === AuthStatus.UNKNOWN) {
+        nextProps.readAuthInfoFromLocalStorage();
+      } else if (nextProps.authStatus === AuthStatus.EXPIRED) {
+        nextProps.renewToken();
+      } else if (nextProps.authStatus !== AuthStatus.AUTHENTICATING &&
+        nextProps.authStatus !== AuthStatus.AUTHENTICATED) {
         history.push('/login');
       }
     }

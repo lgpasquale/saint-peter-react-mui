@@ -43,11 +43,11 @@ export function submitChangeAccountEmail (values, dispatch, props) {
         }
       ));
     }).catch((e) => {
-      console.error('Error ' + e.message);
+      console.error(e);
       throw new SubmissionError({_error: 'Error updating email'});
     });
   }).catch((e) => {
-    console.error('Error ' + e.message);
+    console.error(e);
     throw new SubmissionError({_error: 'Error updating email'});
   });
 }
@@ -72,7 +72,7 @@ export function submitChangeAccountPassword (values, dispatch, props) {
       throw new SubmissionError({_error: 'Error updating password'});
     }
   }).catch((e) => {
-    console.error('Error ' + e.message);
+    console.error(e);
     throw new SubmissionError({_error: 'Error updating password'});
   });
 }

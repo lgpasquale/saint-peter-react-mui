@@ -77,10 +77,10 @@ export function getUsersInfo (authServerURL) {
           dispatch(addExistingUser(user));
         }
       }).catch((e) => {
-        console.error('Error: ' + e.message);
+        console.error(e);
       });
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      console.error(e);
     });
   };
 }
@@ -104,11 +104,10 @@ export function getGroups (authServerURL) {
           dispatch(addExistingGroup(group));
         }
       }).catch((e) => {
-        console.error('Error: ' + e.message);
-        console.error(e.stack);
+        console.error(e);
       });
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      console.error(e);
     });
   };
 }
@@ -149,7 +148,7 @@ export function createUser (authServerURL) {
       }));
       dispatch(editUser(username));
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      console.error(e);
     });
   };
 }
@@ -170,7 +169,7 @@ export function deleteUser (authServerURL, username) {
       }
       dispatch(removeDeletedUser(username));
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      console.error(e);
     });
   };
 }
@@ -202,7 +201,7 @@ export function updateUserInfo (authServerURL, username, userInfo) {
       dispatch(changeUpdatedUser(username, userInfo));
       dispatch(editUser(''));
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      console.error(e);
     });
   };
 }
@@ -227,7 +226,7 @@ export function resetUserPassword (authServerURL, username, password) {
       }
       dispatch(changeUserPassword(''));
     }).catch((e) => {
-      console.error('Error: ' + e.message);
+      console.error(e);
     });
   };
 }

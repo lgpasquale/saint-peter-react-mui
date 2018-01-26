@@ -50,7 +50,7 @@ class AppLayout extends React.Component {
             </ToolbarGroup>
           </Toolbar>
         </div>
-        <div style={{display: 'flex', flexGrow: '1'}}>
+        <div style={{display: 'flex', flexGrow: '1', overflow: 'auto'}}>
           {this.props.children}
         </div>
       </div>

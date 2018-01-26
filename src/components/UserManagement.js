@@ -22,11 +22,14 @@ import {getUsersInfo,
 
 class UserManagement extends React.Component {
   componentDidMount () {
-    this.props.getUsersInfo();
-    this.props.getGroups();
+    let {authServerURL, dispatch} = this.props;
+    dispatch(getUsersInfo(authServerURL));
+    dispatch(getGroups(authServerURL));
   }
+
   render () {
-    let users = this.props.users;
+    let {authServerURL, users, editingUser, deletingUser, changingPasswordUser,
+      dispatch} = this.props;
     let buttonStyle = {minWidth: '36px', margin: '2px'};
     return (
       <div style={{
@@ -37,7 +40,7 @@ class UserManagement extends React.Component {
       }}
       >
         <RaisedButton label='Create user'
-          onClick={this.props.createUser} primary />
+          onClick={() => dispatch(createUser(authServerURL))} primary />
         <div style={{paddingTop: '20px'}}>
           <Paper>
             <Table selectable={false}>
@@ -67,19 +70,19 @@ class UserManagement extends React.Component {
                         alignItems: 'center'
                       }}>
                         <RaisedButton
-                          onClick={() => this.props.editUser(username)}
+                          onClick={() => dispatch(editUser(username))}
                           style={buttonStyle}
                           icon={<EditorModeEdit />}
                           primary
                         />
                         <RaisedButton
-                          onClick={() => this.props.confirmUserDeletion(username)}
+                          onClick={() => dispatch(confirmUserDeletion(username))}
                           style={buttonStyle}
                           icon={<ActionDelete />}
                           primary
                         />
                         <RaisedButton label='Change password'
-                          onClick={() => this.props.changeUserPassword(username)}
+                          onClick={() => dispatch(changeUserPassword(username))}
                           style={buttonStyle}
                           primary />
                       </div>
@@ -91,76 +94,76 @@ class UserManagement extends React.Component {
           </Paper>
         </div>
         <Dialog
-          title={'Delete user \'' + this.props.deletingUser + '\'?'}
+          title={'Delete user \'' + deletingUser + '\'?'}
           actions={[
             <RaisedButton
               style={{margin: '5px'}}
               primary
               label='Cancel'
-              onTouchTap={() => this.props.confirmUserDeletion('')}
+              onTouchTap={() => dispatch(confirmUserDeletion(''))}
             />,
             <RaisedButton
               style={{margin: '5px'}}
               primary
               label='Delete'
               keyboardFocused
-              onTouchTap={() => this.props.deleteUser(this.props.deletingUser)}
+              onTouchTap={() => dispatch(deleteUser(authServerURL, deletingUser))}
             />
           ]}
           modal={false}
-          open={this.props.deletingUser !== ''}
-          onRequestClose={() => this.props.confirmUserDeletion('')}
+          open={deletingUser !== ''}
+          onRequestClose={() => dispatch(confirmUserDeletion(''))}
         />
         <Dialog
           title={'Edit user'}
           contentStyle={{width: '500px'}}
           autoScrollBodyContent
           modal={false}
-          open={this.props.editingUser !== ''}
-          onRequestClose={() => this.props.editUser('')}
+          open={editingUser !== ''}
+          onRequestClose={() => dispatch(editUser(''))}
           actions={[
             <RaisedButton
               style={{margin: '5px'}}
               primary
               label='Cancel'
-              onTouchTap={() => this.props.editUser('')}
+              onTouchTap={() => dispatch(editUser(''))}
             />,
             <RaisedButton
               style={{margin: '5px'}}
               primary
               label='Save'
-              onTouchTap={this.props.submitEditUser}
+              onTouchTap={() => dispatch(submit('editUser'))}
             />
           ]}
         >
-          <EditUserForm onSubmit={(values) => this.props.updateUserInfo(
-              this.props.editingUser, values
-          )} />
+          <EditUserForm onSubmit={(values) => dispatch(
+            updateUserInfo(authServerURL, editingUser, values
+          ))} />
         </Dialog>
         <Dialog
           title={'Change password'}
           contentStyle={{width: '500px'}}
           modal={false}
-          open={this.props.changingPasswordUser !== ''}
-          onRequestClose={() => this.props.changeUserPassword('')}
+          open={changingPasswordUser !== ''}
+          onRequestClose={() => dispatch(changeUserPassword(''))}
           actions={[
             <RaisedButton
               style={{margin: '5px'}}
               primary
               label='Cancel'
-              onTouchTap={() => this.props.changeUserPassword('')}
+              onTouchTap={() => dispatch(changeUserPassword(''))}
             />,
             <RaisedButton
               style={{margin: '5px'}}
               primary
               label='Save'
-              onTouchTap={this.props.submitChangeUserPassword}
+              onTouchTap={() => dispatch(submit('changeUserPassword'))}
             />
           ]}
         >
           <ChangeUserPasswordForm
-            onSubmit={(values) => this.props.resetUserPassword(
-              this.props.changingPasswordUser, values.password)}
+            onSubmit={(values) => dispatch(
+              resetUserPassword(authServerURL, changingPasswordUser, values.password))}
           />
         </Dialog>
       </div>
@@ -177,25 +180,6 @@ function mapStateToProps (state) {
   };
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
-  return {
-    getUsersInfo: () => dispatch(getUsersInfo(ownProps.authServerURL)),
-    getGroups: () => dispatch(getGroups(ownProps.authServerURL)),
-    createUser: () => dispatch(createUser(ownProps.authServerURL)),
-    deleteUser: (username) => dispatch(deleteUser(ownProps.authServerURL, username)),
-    confirmUserDeletion: (username) => dispatch(confirmUserDeletion(username)),
-    editUser: (username) => dispatch(editUser(username)),
-    updateUserInfo: (username, userInfo) =>
-      dispatch(updateUserInfo(ownProps.authServerURL, username, userInfo)),
-    submitEditUser: () => dispatch(submit('editUser')),
-    changeUserPassword: (username) => dispatch(changeUserPassword(username)),
-    resetUserPassword: (username, password) =>
-      dispatch(resetUserPassword(ownProps.authServerURL, username, password)),
-    submitChangeUserPassword: () => dispatch(submit('changeUserPassword'))
-  };
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(UserManagement);

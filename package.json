@@ -1,6 +1,6 @@
 {
   "name": "saint-peter-react-mui",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "React components using material-ui to interact with saint-peter server",
   "main": "lib/index.js",
   "scripts": {

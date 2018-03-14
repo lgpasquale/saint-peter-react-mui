@@ -27,6 +27,7 @@ class AppLayout extends React.Component {
   render () {
     let adminGroup = this.props.adminGroup || 'admin';
     let logo = this.props.logo || (<Home />);
+    let hideHomeButton = this.props.hideHomeButton;
     return (
       <div style={{minHeight: '100%',
         display: 'flex',
@@ -36,7 +37,7 @@ class AppLayout extends React.Component {
         <div>
           <Toolbar>
             <ToolbarGroup firstChild>
-              <IconButton onClick={() => this.props.history.push('/')}>{logo}</IconButton>
+              {(!hideHomeButton) && <IconButton onClick={() => this.props.history.push('/')}>{logo}</IconButton>}
               {this.props.leftToolbarElements}
             </ToolbarGroup>
             <ToolbarTitle text={this.props.title} />

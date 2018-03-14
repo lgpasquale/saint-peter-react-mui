@@ -16,6 +16,7 @@ class App extends React.Component {
             history={this.props.history}
             adminGroup={this.props.adminGroup || 'admin'}
             logo={this.props.logo}
+            hideHomeButton={this.props.hideHomeButton}
             leftToolbarElements={this.props.leftToolbarElements}
             rightToolbarElements={this.props.rightToolbarElements}
             children={props.children} />)
@@ -48,7 +49,8 @@ App.defaultProps = {
   mainPath: 'app',
   history: hashHistory,
   leftToolbarElements: [],
-  rightToolbarElements: []
+  rightToolbarElements: [],
+  hideHomeButton: false
 };
 
 export default App;

@@ -12,6 +12,7 @@ Props:
 - *adminGroup*: group whose users are allowed to add/edit other users (default `admin`)
 - *title*: title shown on the top toolbar
 - *logo*: a react component dispalyed on the top left corner (e.g. <img />)
+- *hideHomeButton*: hide the "home" button from the toolbar (default `false`)
 - *leftToolbarElements*: array of react elements to be shown on the left side of the toolbar
 - *rightToolbarElements*: array of react elements to be shown on the right side of the toolbar
 - *history*: one of browserHistory or hashHistory. See [react-router](https://github.com/ReactTraining/react-router) for details
